@@ -21,17 +21,17 @@ library(tidyr,quietly = T)
 
 ####### Functions #######
 fast5_to_current=function(f5){
-a=h5ls(f5)
-b=as.integer(h5read(f5,a$group[grep("Read_",a$group)])[[1]])
-d=h5readAttributes(f5,"/UniqueGlobalKey/channel_id")
+	a=h5ls(f5)
+	b=as.integer(h5read(f5,a$group[grep("Read_",a$group)])[[1]])
+	d=h5readAttributes(f5,"/UniqueGlobalKey/channel_id")
 
-df=data.frame(number=1:length(b),signal=b)
-df$sec=df$number / d$sampling_rate
-#df$signalz=as.numeric(scale(df$signal))
+	df=data.frame(number=1:length(b),signal=b)
+	df$sec=df$number / d$sampling_rate
+	#df$signalz=as.numeric(scale(df$signal))
 
-H5close()
+	H5close()
 
-df
+	df
 }
 
 ####### Load sequence read data #######
@@ -344,6 +344,8 @@ chunk_sep_total2=left_join(chunk_sep_total,sr[,c("name","strand")])
 diff_list=sapply(dtw_master_center2$name,function(x){
   diff(chunk_sep_total[chunk_sep_total$name==x,"number"])
 })
+
+if (is.array(diff_list)) diff_list = as.data.frame(diff_list)
 
 chunk_sep_diff=data.frame(name=rep(names(diff_list),times=sapply(diff_list,length)),difference=unlist(diff_list),stringsAsFactors = F)
 chunk_sep_diff2=left_join(chunk_sep_diff,sr[,c("name","strand")])
